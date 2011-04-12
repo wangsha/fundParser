@@ -231,6 +231,7 @@ public class FundsParser {
 
 	}
 
+	
 	public LinkedList<String> getESimuProductList() {
 		LinkedList<String> urls = new LinkedList<String>();
 		try {
@@ -274,6 +275,7 @@ public class FundsParser {
 		return urls;
 	}
 
+
 	public String timeToString(String month, String date, String year) {
 		int mth = Integer.parseInt(month);
 		int day = Integer.parseInt(date);
@@ -295,9 +297,10 @@ public class FundsParser {
 	public static void main(String[] args) {
 
 		FundsParser fparser = new FundsParser();
+		
+		//read pe funds data
 		LinkedList<String> products = fparser.getESimuProductList();
 		System.out.println("total number of funds: "+ products.size());
-
 		fparser.getESimuFundHistory(products);
 		try {
 			// get current directory
@@ -315,7 +318,7 @@ public class FundsParser {
 				fparser.addTimeSlots(slot);
 			}
 
-			// ticker_close, must be in 6 digit format
+			// read close tickers, must be in 6 digit format
 			in = new BufferedReader(new FileReader(filepath
 					.concat("/ticker_close.csv")));
 			while ((strLine = in.readLine()) != null) {
@@ -326,25 +329,23 @@ public class FundsParser {
 				}
 			}
 
-			// ticker_open
+			// read open tickers, must be in 6 digit format
 			in = new BufferedReader(new FileReader(filepath
 					.concat("/ticker_open.csv")));
-			// in = new BufferedReader(new FileReader(args[1]));
 			while ((strLine = in.readLine()) != null) {
 				try {
 					Integer.parseInt(strLine);
-					// fparser.parse("ticker_open/", strLine.trim());
 					fparser.addTicker(TICKER_OPEN, strLine.trim());
 				} catch (Exception e) {
 				}
 			}
+			//parse data
 			fparser.parse(TICKER_CLOSE);
 			fparser.writeFile(TICKER_CLOSE);
 			fparser.parse(TICKER_OPEN);
 			fparser.writeFile(TICKER_OPEN);
 			System.out.println("DONE");
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
